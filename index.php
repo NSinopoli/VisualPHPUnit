@@ -129,9 +129,11 @@
     $sandbox_filename = trim(strval(filter_var($_POST['sandbox_filename'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)));
     if ( isset($_POST['sandbox_ignore']) ) {
         $sandbox_ignore = array();
-        foreach ( $_POST['sandbox_ignore'] as $ignore ) {
-            $sandbox_ignore[] = trim(strval(filter_var($ignore, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)));
-        }
+		if ( !empty($_POST['sandbox_ignore']) ) {
+	        foreach ( $_POST['sandbox_ignore'] as $ignore ) {
+	            $sandbox_ignore[] = trim(strval(filter_var($ignore, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)));
+			}
+		}
         $sandbox_ignore = implode('|', $sandbox_ignore);
     } else {
         $sandbox_ignore = '';

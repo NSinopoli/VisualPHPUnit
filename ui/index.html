@@ -149,8 +149,6 @@
 
         </div>
     </div>
-</body> 
-
 <script src="ui/js/jquery-1.5.1.min.js"></script> 
 <script src="ui/js/jquery.sortElements.js"></script>
 <script src="ui/js/jqueryFileTree/jqueryFileTree.js"></script> 
@@ -231,10 +229,13 @@
         });
 
         function updateIgnore(ignoreErrors) {
-            var ignore = ignoreErrors.split('|');
-            for ( var i = 0; i < ignore.length; i++ ) {
-                $('#' + ignore[i].toLowerCase()).attr('checked', 'checked');
-            }
+			if (ignoreErrors != "")
+			{
+				var ignore = ignoreErrors.split('|');
+				for ( var i = 0; i < ignore.length; i++ ) {
+					$('#' + ignore[i].toLowerCase()).attr('checked', 'checked');
+				}
+			}
         }
 
         $('#legend_tests, #legend_options').click(function() {
@@ -369,9 +370,9 @@
             event.preventDefault();
             $('#output').html("<div class='loader'><img src='ui/images/loading.gif' /></div>");
 
-            var sandboxIgnore = { 'types[]' : []};
-            $(":checked").each(function() {
-                sandboxIgnore['types[]'].push($(this).val());
+            var sandboxIgnore = [];
+            $('input[name="sandbox_ignore[]"]:checked').each(function() {
+                sandboxIgnore.push($(this).val());
             });
 
             $.post('index.php', {
@@ -457,4 +458,5 @@
         
     });
 </script> 
+</body>
 </html> 
