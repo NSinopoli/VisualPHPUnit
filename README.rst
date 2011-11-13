@@ -33,6 +33,7 @@ Installation
 2. Open config.php with your favorite editor.
     a. Change PHPUNIT_INSTALL so that it points to the directory where PHPUnit is installed.
     b. Update TEST_DIRECTORY so that it points to the root directory where your unit tests are stored.
+    c. (optional) Change PEAR_INSTALL so that it points to the directory where PEAR is installed.
 3. Point your browser to the location where you installed VisualPHPUnit!
 
 Configuration (optional)
