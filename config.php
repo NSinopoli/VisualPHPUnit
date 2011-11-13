@@ -46,6 +46,12 @@ define('PHPUNIT_INSTALL', '/usr/share/pear/PHPUnit');
 set_include_path(get_include_path().PATH_SEPARATOR.
                  PHPUNIT_INSTALL.PATH_SEPARATOR);
 
+// The directory where PEAR is installed
+define('PEAR_INSTALL', '/usr/share/pear/');
+
+set_include_path(get_include_path().PATH_SEPARATOR.
+                 PEAR_INSTALL.PATH_SEPARATOR);
+
 // The directory where the tests reside
 define('TEST_DIRECTORY', BASE_INSTALL . '/tests/');
 
