@@ -744,7 +744,7 @@ class VPU {
                 )
             );
             $runner = new PHPUnit_TextUI_TestRunner();
-            $runner->doRun($suite, $phpunit_config);
+            $runner->doRun($config->getTestSuiteConfiguration(), $phpunit_config);
         } else {
             $result = new PHPUnit_Framework_TestResult();
             $result->addListener(new PHPUnit_Util_Log_JSON());
