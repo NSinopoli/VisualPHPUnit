@@ -79,6 +79,7 @@
     if ( empty($_POST) ) {
         $results = get_snapshots();
 
+        echo "<a href = \"../../src/protected/tests/reportViaVPU\">Test Coverage Report</a>\n";
         include 'ui/index.html';
         exit;
     }
@@ -106,15 +107,26 @@
         $start_date = trim(strval(filter_var($_POST['start_date'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)));
         $end_date = trim(strval(filter_var($_POST['end_date'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)));
 
-        require 'lib/PDO_MySQL.php';
         $config = array(
             'database' => DATABASE_NAME,
             'host'     => DATABASE_HOST,
             'username' => DATABASE_USER,
             'password' => DATABASE_PASS
         );
-        $db = new PDO_MySQL($config);
 
+        // [Jethro 20111124]
+        assert("defined('DATABASE_PDO') /* 'DATABASE_PDO' must be configured to store statistics */");
+        if (DATABASE_PDO === "MySQL") {
+        	require 'lib/PDO_MySQL.php';
+        	$db = new PDO_MySQL($config);
+        }
+       	else if (DATABASE_PDO === "PostgreSQL") {
+       		require 'lib/PDO_PostgreSQL.php';
+        	$db = new PDO_PostgreSQL($config);
+       	}
+       	else
+       		assert("false /* 'DATABASE_PDO' shall be either 'MySQL' or 'PostgreSQL' */");
+                        
         echo $vpu->build_graph($graph_type, $time_frame, $start_date, $end_date, $db);
         exit;
     }
@@ -148,14 +160,26 @@
     $results = $vpu->run($tests);
 
     if ( $store_statistics ) {
-        require 'lib/PDO_MySQL.php';
         $config = array(
             'database' => DATABASE_NAME,
             'host'     => DATABASE_HOST,
             'username' => DATABASE_USER,
             'password' => DATABASE_PASS
         );
-        $db = new PDO_MySQL($config);
+        
+        // [Jethro 20111124]
+        assert("defined('DATABASE_PDO') /* 'DATABASE_PDO' must be configured to store statistics */");
+        if (DATABASE_PDO === "MySQL") {
+        	require 'lib/PDO_MySQL.php';
+        	$db = new PDO_MySQL($config);
+        }
+       	else if (DATABASE_PDO === "PostgreSQL") {
+       		require 'lib/PDO_PostgreSQL.php';
+        	$db = new PDO_PostgreSQL($config);
+       	}
+       	else
+       		assert("false /* 'DATABASE_PDO' shall be either 'MySQL' or 'PostgreSQL' */");
+        
         $vpu->save_results($results, $db);
     }
 
