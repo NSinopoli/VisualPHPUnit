@@ -734,6 +734,9 @@ class VPU {
         $result = new PHPUnit_Framework_TestResult;
         $result->addListener(new PHPUnit_Util_Log_JSON);
 
+        // [Jethro 20111124]
+        $result->collectCodeCoverageInformation(TRUE);
+        
         // We need to temporarily turn off html_errors to ensure correct parsing of test debug output
         $html_errors = ini_get('html_errors');
 
@@ -741,6 +744,30 @@ class VPU {
         ini_set('html_errors', 0);
         $suite->run($result);
         $results = ob_get_contents();
+        
+        /** 
+         * [Jethro 20111127]
+         * After reading /usr/bin/phpunit then the relative path to 
+         * Report.php was found...   
+         * 
+         * [Jethro 20111124]
+         * Sorry... Maybe somebody help on this?
+         * "/usr/share/php/PHPUnit/Util/Report.php" 
+         * Can't get rid of absolutate path..Orz..
+         * (the path when running PHPUnit from command line is /usr/bin)
+         */
+		include("PHPUnit/Util/Report.php");		 
+		PHPUnit_Util_Report::render(
+			$result,
+			COVERAGE_REPORT_DIR . "/./reportViaVPU",	// $arguments['reportDirectory'], 
+        	"",						// $loggingConfiguration['title'], 
+        	"UTF-8", 				// $arguments['reportCharset'], 
+        	false,					// $arguments['reportYUI'],
+        	true,					// $arguments['reportHighlight'],
+        	35,						// $arguments['reportLowUpperBound'],
+        	70						// $arguments['reportHighLowerBound']
+        );
+        
         ini_set('html_errors', $html_errors);
         ob_end_clean();
 
