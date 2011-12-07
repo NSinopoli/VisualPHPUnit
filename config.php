@@ -40,13 +40,13 @@ ini_set('display_errors', 1);
 // The directory where this application is installed
 define("BASE_INSTALL", realpath(__DIR__));
 
-// [Jethro 20111123] config path to PEAR
 // The directory where PEAR is located
 define('PEAR_PATH', '/usr/share/pear');
 
 set_include_path(get_include_path().PATH_SEPARATOR.
                  PEAR_PATH.PATH_SEPARATOR);
 
+// The directory where the tests reside
 define('TEST_DIRECTORY', BASE_INSTALL . '/tests/');
 
 // [Jethro 20111124] Add coverage report functionality; 
