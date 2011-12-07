@@ -79,7 +79,6 @@
     if ( empty($_POST) ) {
         $results = get_snapshots();
 
-        echo "<a href = \"../../src/protected/tests/reportViaVPU\">Test Coverage Report</a>\n";
         include 'ui/index.html';
         exit;
     }

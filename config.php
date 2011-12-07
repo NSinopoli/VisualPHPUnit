@@ -42,18 +42,16 @@ define("BASE_INSTALL", realpath(__DIR__));
 
 // [Jethro 20111123] config path to PEAR
 // The directory where PEAR is located
-define('PEAR_PATH', '/usr/share/php/PEAR');
+define('PEAR_PATH', '/usr/share/pear');
 
 set_include_path(get_include_path().PATH_SEPARATOR.
                  PEAR_PATH.PATH_SEPARATOR);
 
-// [Jethro 20111123] config path to unit test cases
-// The directory where the tests reside
-define('TEST_DIRECTORY', BASE_INSTALL . '/../../src/protected/tests/unit');
+define('TEST_DIRECTORY', BASE_INSTALL . '/tests/');
 
 // [Jethro 20111124] Add coverage report functionality; 
-// Note that this is the *PARENT* path where "reportViaVPU" shall reside.  
-define("COVERAGE_REPORT_DIR", TEST_DIRECTORY . "/../reportViaVPU");
+// The path where "reportViaVPU" shall reside.  
+define("COVERAGE_REPORT_DIR", TEST_DIRECTORY . "/reportViaVPU");
 
 /*
  * Optional settings
@@ -83,17 +81,15 @@ define('STORE_STATISTICS', false);
 // define('DATABASE_PDO', 'MySQL');
 define('DATABASE_PDO', 'PostgreSQL');
 
-// [Jethro 20111123] config databases
 // The database settings
-define('DATABASE_NAME', 'anyway2funvpu');
-define('DATABASE_HOST', 'ct200h');
-define('DATABASE_USER', 'anygoose');
-define('DATABASE_PASS', 'gyanygoosegy');
+define('DATABASE_NAME', 'vpu');
+define('DATABASE_HOST', 'localhost');
+define('DATABASE_USER', 'vpu');
+define('DATABASE_PASS', 'vpu');
 
 // Paths to any necessary bootstraps
 $bootstraps = array(
-    // '/path/to/tests/bootstrap.php'
-	"./../../src/protected/tests/bootstrap.php", 
+    '/path/to/tests/bootstrap.php'
 );
 
 foreach ( $bootstraps as $bootstrap ) {
