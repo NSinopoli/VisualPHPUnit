@@ -35,8 +35,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require 'PHPUnit/Autoload.php';
-require 'PHPUnit/Util/Log/JSON.php';
+require_once 'PHPUnit/Autoload.php';
+require_once 'PHPUnit/Util/Log/JSON.php';
 
 class VPU {
 
