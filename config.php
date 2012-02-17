@@ -49,6 +49,10 @@ set_include_path(get_include_path().PATH_SEPARATOR.
 // The directory where the tests reside
 define('TEST_DIRECTORY', BASE_INSTALL . '/tests/');
 
+// [Jethro 20111124] Add coverage report functionality; 
+// The path where "reportViaVPU" shall reside.  
+define("COVERAGE_REPORT_DIR", TEST_DIRECTORY . "/reportViaVPU");
+
 /*
  * Optional settings
  */
@@ -73,15 +77,19 @@ define('SANDBOX_IGNORE', 'E_STRICT');
 // (these statistics will be used to generate graphs)
 define('STORE_STATISTICS', false);
 
+// [Jethro 20111124] Port PDO to use PostgreSQL
+// define('DATABASE_PDO', 'MySQL');
+define('DATABASE_PDO', 'PostgreSQL');
+
 // The database settings
 define('DATABASE_NAME', 'vpu');
 define('DATABASE_HOST', 'localhost');
-define('DATABASE_USER', 'root');
-define('DATABASE_PASS', 'admin');
+define('DATABASE_USER', 'vpu');
+define('DATABASE_PASS', 'vpu');
 
 // Paths to any necessary bootstraps
 $bootstraps = array(
-    // '/path/to/tests/bootstrap.php'
+    '/path/to/tests/bootstrap.php'
 );
 
 foreach ( $bootstraps as $bootstrap ) {
