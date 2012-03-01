@@ -98,7 +98,7 @@ class PDO_MySQL {
     *  @return bool
     */
     public function connect($options) {
-        $dsn = 'mysql:host=' . $options['host'] . ';dbname=' . $options['database']; 
+        $dsn = 'mysql:host=' . $options['host'] . ';port=' . $options['port'] . ';dbname=' . $options['database'];
         try {
             $this->_dbh = new \PDO($dsn, $options['username'], $options['password']);
             $this->_dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);

@@ -76,6 +76,7 @@ define('STORE_STATISTICS', false);
 // The database settings
 define('DATABASE_NAME', 'vpu');
 define('DATABASE_HOST', 'localhost');
+define('DATABASE_PORT', '3306');
 define('DATABASE_USER', 'root');
 define('DATABASE_PASS', 'admin');
 
