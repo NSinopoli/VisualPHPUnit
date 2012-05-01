@@ -154,7 +154,7 @@
         </div>
     </div>
 
-<script src="ui/js/jquery-1.5.1.min.js"></script>
+<script src="ui/js/jquery.min.js"></script>
 <script src="ui/js/jquery.sortElements.js"></script>
 <script src="ui/js/jqueryFileTree/jqueryFileTree.js"></script>
 <script src='ui/js/jquery-ui-1.8.11.custom.min.js'></script>
@@ -265,6 +265,28 @@
             });
         });
 
+        $('#browser')
+			.on('click', '[id^="legend_"]', function() {
+				var _this = $(this);
+				var _id = _this.prop('id');
+
+				if (_id == 'legend_tests' || _id == 'legend_options') {
+					_id = 'legend_tests';
+				}
+
+				window.location.hash = '#' + _id;
+			})
+			.on('click', '#view_archive, #draw_graph, #run_tests' ,function(){
+				window.location.hash = '#';
+			})
+		;
+
+		$(function(){
+			if (window.location.hash) {
+				$(window.location.hash).triggerHandler('click');
+			}
+		});
+
         function updateOutput() {
             $('#sort_type').unbind();
             $('#sort_type').bind('change', function() {
@@ -348,6 +370,10 @@
                     new Highcharts.Chart(chart);
                     $(this).fadeIn(300, function() {
                         updateBrowser();
+
+                        $(window)
+							.triggerHandler('resize')
+						;
                     });
                 });
             });

@@ -200,9 +200,15 @@ body {
 
 #output .test {
     padding: 3px 7px;
+    /*
     overflow:auto;
+    */
     vertical-align: center;
     clear:both;
+}
+
+#output .test .variables pre {
+	overflow:auto;
 }
 
 #output .light {
@@ -258,7 +264,7 @@ body {
 }
 
 #output .testsuite .info {
-    clear:both; 
+    clear:both;
     margin-top:19px;
     margin-left:32px;
 }
@@ -334,7 +340,7 @@ body {
 }
 
 #output .results .light {
-    background-color: #0099FF;  
+    background-color: #0099FF;
     border: 1px solid #000066;
 }
 
