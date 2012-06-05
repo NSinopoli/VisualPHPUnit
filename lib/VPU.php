@@ -597,7 +597,7 @@ class VPU {
         }
 
         $results = '[' . rtrim($results, ',') . ']';
-        $results = str_replace('\n', '', $results);
+        $results = str_replace('\n', '<br/>', $results);
         $results = str_replace('&quot;', '"', $results);
 
         $results = json_decode($results, true);
