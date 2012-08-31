@@ -464,7 +464,7 @@ class VPU {
     * @access public
     * @return string
     */
-    public function run_with_xml($xml_config) {
+    public function run_with_xml($xml_config, $extraConfiguration) {
         $command = new \PHPUnit_TextUI_Command();
 
         // We need to temporarily turn off html_errors to ensure correct
@@ -473,7 +473,15 @@ class VPU {
         ini_set('html_errors', 0);
 
         ob_start();
-        $command->run(array('--configuration', $xml_config), false);
+        
+         if(isset($extraConfiguration['use_group_name'])){
+           $command->run(array('--configuration', $xml_config, '--group', $extraConfiguration['use_group_name']), false);
+        }else if(isset($extraConfiguration['run_specific_test'])){
+        	$command->run(array('--configuration', $xml_config, '--filter', $extraConfiguration['run_specific_test']), false);
+        }else{
+        	$command->run(array('--configuration', $xml_config), false);
+        }
+        
         $results = ob_get_contents();
         ob_end_clean();
 
