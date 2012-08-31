@@ -112,7 +112,31 @@
               </li>
 
               <li class='divider'></li>
-
+                <li>
+                <label for='use_group_name' class='options-description'>
+                  <i class='icon-wrench'></i>
+                  Use Group Selection
+                </label>
+                <select id='use_group_name' name='use_group_name' class='test-options'>
+                <option value=''></option>
+                  <?php foreach ($usable_group_names as $group_name){?>
+                  <option value='<?php echo $group_name; ?>'><?php echo $group_name; ?></option>
+                  <?php } ?>
+                </select>
+                <p class='help-block'>
+                  Add a new group by editing this file (index.html)
+                </p>
+              </li>
+               <li class='divider'></li>
+              <li>
+                <label for='run_specific_test' class='options-description'>
+                  <i class='icon-wrench'></i>
+                  Test a specific test
+                </label>
+              <input type="text" name="run_specific_test"/>
+              </li>              
+              
+              <li class='divider'></li>
 
               <li class='nav-header'>Display</li>
               <li>
