@@ -63,6 +63,10 @@ $config = array(
     // contain a JSON listener (see the README for more information)
     'xml_configuration_file' => false,
     //'xml_configuration_file' => "{$root}/app/config/phpunit.xml",
+    
+    'usable_group_names' => array(
+		'DefaultTestGroup'
+	),    
 
     // Paths to any necessary bootstraps
     'bootstraps' => array(

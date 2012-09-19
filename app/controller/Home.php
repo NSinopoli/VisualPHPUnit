@@ -49,6 +49,7 @@ class Home extends \app\core\Controller {
             $create_snapshots = \app\lib\Library::retrieve('create_snapshots');
             $sandbox_errors = \app\lib\Library::retrieve('sandbox_errors');
             $use_xml = \app\lib\Library::retrieve('xml_configuration_file');
+            $usable_group_names = \app\lib\Library::retrieve('usable_group_names');            
             return compact(
                 'create_snapshots',
                 'sandbox_errors',
@@ -56,7 +57,8 @@ class Home extends \app\core\Controller {
                 'store_statistics',
                 'suites',
                 'test_directory',
-                'use_xml'
+                'use_xml',
+                'usable_group_names'
             );
         }
 
@@ -84,9 +86,16 @@ class Home extends \app\core\Controller {
                 );
             }
         }
+        
+        $extraConfiguration = array();
+        if( isset($request->data['use_group_name']) && $request->data['use_group_name'] != ''){
+            $extraConfiguration['use_group_name'] = $request->data['use_group_name'];
+        }else if(isset($request->data['run_specific_test']) && $request->data['run_specific_test'] != ''){
+        	$extraConfiguration['run_specific_test'] = $request->data['run_specific_test'];
+        }
 
         $results = ( $xml_config )
-            ? $vpu->run_with_xml($xml_config)
+            ? $vpu->run_with_xml($xml_config, $extraConfiguration)
             : $vpu->run_tests($tests);
         $results = $vpu->compile_suites($results, 'web');
 
