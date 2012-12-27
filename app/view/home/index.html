@@ -313,10 +313,8 @@
             $output.html(
               "<div class='loader'><img src='./img/ajax-loader.gif'></div>"
             ).fadeIn(300);
-
+            var template = $("#test-results").html();
             $.post($form.attr('action'), $form.serialize(), function(response) {
-              var template = $("#test-results").html();
-
               try {
                 response = $.parseJSON(response);
               } catch (e) {
@@ -349,6 +347,21 @@
                 });
               });
 
+            }).error(function(){
+              $output.fadeOut(300, function(){
+                $output.fadeIn(300, function(){
+                  $output.html(_.template(template, {
+                    errors: [],
+                    suites: [],
+                    stats: [],
+                    notifications: [{
+                      type: 'failed',
+                      title: 'Error Status From Server',
+                      message: "",
+                    }]
+                  }));
+                });
+              });
             });
           });
         };
