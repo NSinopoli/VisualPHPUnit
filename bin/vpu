@@ -32,7 +32,7 @@
 
     $filename = realpath(
         \app\lib\Library::retrieve('snapshot_directory')
-    ) . '/' . date('Y-m-d_G-i') . '.html';
+    ) . '/' . date('Y-m-d_H-i') . '.html';
 
     $handle = @fopen($filename, 'a');
     if ( !$handle ) {
