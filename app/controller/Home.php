@@ -7,7 +7,7 @@ class Home extends \app\core\Controller {
     protected function _create_snapshot($view_data) {
         $filename = realpath(
             \app\lib\Library::retrieve('snapshot_directory')
-        ) . '/' . date('Y-m-d_G-i') . '.html';
+        ) . '/' . date('Y-m-d_H-i') . '.html';
 
         $contents = $this->render_html('partial/test_results', $view_data);
 
