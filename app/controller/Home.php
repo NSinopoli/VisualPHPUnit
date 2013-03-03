@@ -72,8 +72,17 @@ class Home extends \app\core\Controller {
 
         $notifications = array();
         if ( $request->data['use_xml'] ) {
-            $xml_config = \app\lib\Library::retrieve('xml_configuration_file');
-            if ( !$xml_config || !$xml_config = realpath($xml_config) ) {
+            if ( $xml_config = \app\lib\Library::retrieve('xml_configuration_file') ) {
+                if ( is_array($xml_config) ) {
+                    $config_id = array_search($request->data['use_xml'], $xml_config);
+                    $xml_config = ( false !== $config_id )
+                        ? realpath($xml_config[$config_id])
+                        : false;
+                } else {
+                    $xml_config = realpath($xml_config);
+                }
+            }
+            if ( !$xml_config ) {
                 $notifications[] = array(
                     'type'    => 'failed',
                     'title'   => 'No Valid XML Configuration File Found',
