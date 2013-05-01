@@ -48,7 +48,7 @@
       <div class='row'>
 
         <div class='span3'>
-          <form id='test-container' action='./' method='post' class='well'>
+          <form id='test-container' action='<?php echo $post_handler?>' method='post' class='well'>
             <ul class="nav nav-list">
               <li class='nav-header'>Files</li>
 
@@ -63,10 +63,10 @@
                   ctrl+click (cmd+click) to select an entire directory.
                 </p>
               </li>
+              <li class='nav-header'>Options</li>
 
               <li class='divider'></li>
 
-              <li class='nav-header'>Options</li>
               <li>
                 <label for='store_statistics' class='options-description'>
                   <i class='icon-pencil'></i>
@@ -110,6 +110,34 @@
                   Note that setting this to "Yes" will cause VPU to ignore the tests selected above and use the tests specified in the XML file instead.
                 </p>
               </li>
+
+              <?php if ($optional_bootstraps) { ?>
+                <li class='divider'></li>
+
+                <li class='nav-header'>Optional Bootstraps</li>
+                <li>
+                  <?php
+                  foreach($optional_bootstraps as $boot => $options) {
+                    echo "<label class=\"checkbox\"><input name=\"optional_bootstraps[$boot]\" type=\"checkbox\"/>" . "{$options['name']}</label>\n";
+                  }
+                  ?>
+                </li>
+              <?php } ?>
+
+              <?php if ($optional_parameters) { ?>
+                <li class='divider'></li>
+
+                <li class='nav-header'>Optional Parameters</li>
+                <li>
+                  <?php
+                  foreach($optional_parameters as $parameter => $options) {
+                    echo "<label class=\"checkbox\"><input name=\"optional_parameters[$parameter]\" type=\"checkbox\"/>" . "{$options['name']}</label>" . 
+                        "<input style=\"width: 90%;\" name=\"optional_parameters_value[$parameter]\" type=\"text\"/>\n";
+                  }
+                  ?>
+                </li>
+              <?php } ?>
+
 
               <li class='divider'></li>
 

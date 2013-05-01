@@ -22,7 +22,7 @@ class Library {
     */
     public static function retrieve($key = null) {
         if ( $key ) {
-            return self::$_config[$key];
+            return isset( self::$_config[$key] ) ? self::$_config[$key] : NULL;
         }
         return self::$_config;
     }

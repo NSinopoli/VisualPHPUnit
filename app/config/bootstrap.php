@@ -9,7 +9,7 @@ $config = array(
     'pear_path'      => '/usr/share/pear',
 
     // The directory where the tests reside
-    'test_directory' => "{$root}/app/test",
+    'test_directory' => "/var/www/html/php-test-runner/tests",
 
 
     /* Optional */
@@ -67,7 +67,27 @@ $config = array(
     // Paths to any necessary bootstraps
     'bootstraps' => array(
         // '/path/to/bootstrap.php'
-    )
+    ),
+    'optional_bootstraps' => array(
+      '1' => array(
+        'file' => '/var/www/html/php-test-runner/browser_settings/firefox/browser_settings.php',
+        'name' => 'Firefox'
+      ),
+      '2' => array(
+        'file' => '/var/www/html/php-test-runner/browser_settings/chrome/browser_settings.php',
+        'name' => 'Chrome'
+      ),
+      '3' => array(
+        'file' => '/var/www/html/php-test-runner/browser_settings/internet_explorer/browser_settings.php',
+        'name' => 'Internet Explorer'
+      ),
+    ),
+    'optional_parameters' => array(
+      '1' => array(
+        'name' => 'Selenium Driver Host'
+      )
+    ),
+    'alternate_post_handler' => 'http://coraldev.eng.utah.edu/lab/servicerequest/test/phpunit_test/runall'
 );
 
 set_include_path(
@@ -90,6 +110,9 @@ spl_autoload_register(function($class) use ($root) {
 foreach ( $config['bootstraps'] as $bootstrap ) {
     require $bootstrap;
 }
+
+set_include_path(get_include_path() . PATH_SEPARATOR . '/var/www/html/php-test-runner');
+set_include_path(get_include_path() . PATH_SEPARATOR . '/var/www/html/php-test-runner/browser_settings/firefox');
 
 \app\lib\Library::store($config);
 

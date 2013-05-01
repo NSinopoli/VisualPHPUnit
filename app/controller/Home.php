@@ -46,17 +46,26 @@ class Home extends \app\core\Controller {
             $suites = array();
             $stats = array();
             $store_statistics = \app\lib\Library::retrieve('store_statistics');
+            $optional_bootstraps = \app\lib\Library::retrieve('optional_bootstraps');
+            $optional_parameters = \app\lib\Library::retrieve('optional_parameters');
             $create_snapshots = \app\lib\Library::retrieve('create_snapshots');
             $sandbox_errors = \app\lib\Library::retrieve('sandbox_errors');
             $use_xml = \app\lib\Library::retrieve('xml_configuration_file');
+            $post_handler = \app\lib\Library::retrieve('alternate_post_handler');
+            if (!$post_handler) {
+              $post_handler = './';
+            }
             return compact(
                 'create_snapshots',
                 'sandbox_errors',
                 'stats',
                 'store_statistics',
+                'optional_bootstraps',
+                'optional_parameters',
                 'suites',
                 'test_directory',
-                'use_xml'
+                'use_xml',
+                'post_handler'
             );
         }
 
@@ -83,6 +92,15 @@ class Home extends \app\core\Controller {
                     . 'has the proper permissions.'
                 );
             }
+        }
+        if ( isset( $request->data['optional_bootstraps'] ) ) {
+          $this->_run_optional_bootstraps($request->data['optional_bootstraps']) ;
+        }
+        if ( isset( $request->data['optional_parameters'] ) ) {
+          $this->_set_optional_parameters(
+            $request->data['optional_parameters'],
+            $request->data['optional_parameters_value']
+          );
         }
 
         $results = ( $xml_config )
@@ -146,6 +164,31 @@ class Home extends \app\core\Controller {
                 . 'successfully stored.'
         );
 
+    }
+
+    function _run_optional_bootstraps($bootstraps) {
+      foreach($bootstraps as $boot => $value) {
+        $this->_require_optional_bootstrap($boot);
+      }
+    }
+
+    function _require_optional_bootstrap($bootstrap) {
+      $allowed_bootstraps = \app\lib\Library::retrieve('optional_bootstraps');
+      if (in_array($bootstrap, $allowed_bootstraps)) {
+        require($allowed_bootstraps[$bootstrap]['file']);
+      }
+    }
+
+    function _set_optional_parameters($params, $params_values) {
+      $optional_parameters = \app\lib\Library::retrieve('optional_parameters');
+
+      global $optional_parameters_for_test;
+      foreach($params as $index => $checked_or_not) {
+        if (isset( $optional_parameters[$index]) ) {
+          $param_name = $optional_parameters[$index]['name'];
+          $optional_parameters_for_test[$param_name] = $params_values[$index];
+        }
+      }
     }
 
 }
