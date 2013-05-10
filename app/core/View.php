@@ -47,7 +47,12 @@ class View {
 
         $compiler = $this->_config['dependencies']['compiler'];
         $options = compact('path');
-        $__template__ = $compiler::compile($file, $options);
+        if ( false === ($__template__ = $compiler::compile($file, $options)) ) {
+            throw new \RuntimeException(
+                'Error creating cache template file in path: "'
+                . $path . '". Please check permissions on folder.'
+            );
+        }
 
         if ( is_array($vars) ) {
             extract($vars);

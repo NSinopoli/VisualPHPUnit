@@ -4,6 +4,9 @@
 
 * Allow `test_directory` and `xml_configuration_file` to be arrays of strings aswell so can run multiple test suites from one deployment.
 * Allow certain arguments to be passed to the command line version, temporarily overwriting the ones in bootstrap `$config`.
+* Throw an exception when the view template cannot be written to the cache directory.
+* Throw an exception when the XML configuration file doesn't contain the required listener.
+* Throw an exception when PHPUnit response doesn't contain the required JSON.
 
 ## v2.1.1
 

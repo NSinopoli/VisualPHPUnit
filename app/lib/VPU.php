@@ -453,6 +453,30 @@ class VPU {
     * @return string
     */
     public function run_with_xml($xml_config) {
+        $configuration = \PHPUnit_Util_Configuration::getInstance($xml_config);
+        $listeners = $configuration->getListenerConfiguration();
+
+        $requiredListener = 'PHPUnit_Util_Log_JSON';
+        if ( !is_array($listeners) || empty($listeners) ) {
+            throw new \DomainException(
+                'XML Configuration file doesn\'t contain any listeners. '
+                . $requiredListener . ' is required.'
+            );
+        }
+        $foundRequiredListener = false;
+        foreach ( $listeners as $key => $listener ) {
+            if ( !empty($listener['class']) && $listener['class'] === $requiredListener ) {
+                $foundRequiredListener = true;
+                break;
+            }
+        }
+        if ( !$foundRequiredListener ) {
+            throw new \DomainException(
+                'XML Configuration file doesn\'t contain '
+                . 'the required listener: ' . $requiredListener
+            );
+        }
+
         $command = new \PHPUnit_TextUI_Command();
 
         // We need to temporarily turn off html_errors to ensure correct
@@ -467,7 +491,11 @@ class VPU {
 
         ini_set('html_errors', $html_errors);
 
-        $start = strpos($results, '{');
+        if ( false === ($start = strpos($results, '{')) ) {
+            throw new \DomainException(
+                'Cannot find JSON in results.'
+            );
+        }
         $end = strrpos($results, '}');
         return substr($results, $start, $end - $start + 1);
     }
