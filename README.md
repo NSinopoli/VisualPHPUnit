@@ -45,6 +45,7 @@ While no longer actively supported, v1.x can be found on its [own branch](https:
 3. Open `app/config/bootstrap.php` with your favorite editor.
     1. Within the `$config` array, change `pear_path` so that it points to the directory where PEAR is located.
     2. Within the `$config` array, change `test_directory` so that it points to the root directory where your unit tests are stored.
+    	* `test_directory` may also be an array of paths pointing to different test framework root directories.
 4. Configure your web server (see below).
 
 ## Web Server Configuration
@@ -135,7 +136,7 @@ By default, the file selector does not display hidden folders (i.e., folders wit
 
 If you'd like to use a [PHPUnit XML configuration file](http://www.phpunit.de/manual/current/en/appendixes.configuration.html) to define which tests to run, you will have to do the following:
 
-1. Within the `$config` array, change `xml_configuration_file` to the path where the configuration file can be found.
+1. Within the `$config` array, change `xml_configuration_file` to the path, or an array or paths, where the configuration file/s can be found.
     - Note that if you leave this set to `false`, but select 'Yes' for the 'Use XML Config' option on the UI, VPU will complain and run with the tests chosen in the file selector instead.
 2. Modify your PHPUnit XML configuration file to include this block:
 
@@ -180,6 +181,12 @@ VPU can be executed from the command line using the following command:
 # from the project root
 bin/vpu
 ```
+
+The command line version accepts four arguments which temporarily overwrite the corresponding values in the bootstrap `$config`:
+* `--store_statistics` - Sets `store_statistics` to true for this run.
+* `--sandbox_errors` - Sets `sandbox_errors` to true for this run.
+* `--snapshot_directory <path>` - Sets `snapshot_directory` to the path provided for this run.
+* `--xml_configuration_file <path|index>` - Sets `xml_configuration_file` to the path provided, or the index if it exists when `xml_configuration_file` is an array.
 
 ## Version Information
 

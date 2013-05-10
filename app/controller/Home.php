@@ -32,6 +32,25 @@ class Home extends \app\core\Controller {
         );
     }
 
+    protected function _get_paths_from_library_entry($key) {
+        $ret_val = \app\lib\Library::retrieve($key);
+        if ( !is_array($ret_val) ) {
+            $ret_val = array( $ret_val );
+        }
+        foreach ( $ret_val as $key => &$path ) {
+            if (false === ($path = realpath($path))) {
+                unset($ret_val[$key]);
+            } else {
+                $path = str_replace('\\', '/', $path);
+            }
+        }
+        if ( 1 == count($ret_val) ) {
+            $ret_val_keys = array_keys($ret_val);
+            $ret_val = $ret_val[$ret_val_keys[0]];
+        }
+        return $ret_val;
+    }
+
     // GET
     public function help($request) {
         return array();
@@ -40,15 +59,13 @@ class Home extends \app\core\Controller {
     // GET/POST
     public function index($request) {
         if ( $request->is('get') ) {
-            $test_directory = str_replace(
-                '\\', '/', realpath(\app\lib\Library::retrieve('test_directory'))
-            );
+            $test_directory = $this->_get_paths_from_library_entry('test_directory');
             $suites = array();
             $stats = array();
             $store_statistics = \app\lib\Library::retrieve('store_statistics');
             $create_snapshots = \app\lib\Library::retrieve('create_snapshots');
             $sandbox_errors = \app\lib\Library::retrieve('sandbox_errors');
-            $use_xml = \app\lib\Library::retrieve('xml_configuration_file');
+            $use_xml = $this->_get_paths_from_library_entry('xml_configuration_file');
             return compact(
                 'create_snapshots',
                 'sandbox_errors',
@@ -72,8 +89,22 @@ class Home extends \app\core\Controller {
 
         $notifications = array();
         if ( $request->data['use_xml'] ) {
-            $xml_config = \app\lib\Library::retrieve('xml_configuration_file');
-            if ( !$xml_config || !$xml_config = realpath($xml_config) ) {
+            if ( $xml_config = \app\lib\Library::retrieve('xml_configuration_file') ) {
+                if ( is_array($xml_config) ) {
+                    foreach ( $xml_config as $xml_conf_entry ) {
+                        if ( $request->data['use_xml'] === ($real_xml_conf_entry = realpath($xml_conf_entry)) ) {
+                            $xml_config = $real_xml_conf_entry;
+                            break;
+                        }
+                    }
+                    if ( !is_string($xml_config) ) {
+                        $xml_config = false;
+                    }
+                } else {
+                    $xml_config = realpath($xml_config);
+                }
+            }
+            if ( !$xml_config ) {
                 $notifications[] = array(
                     'type'    => 'failed',
                     'title'   => 'No Valid XML Configuration File Found',
