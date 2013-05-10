@@ -32,6 +32,25 @@ class Home extends \app\core\Controller {
         );
     }
 
+    protected function _get_paths_from_library_entry($key) {
+        $ret_val = \app\lib\Library::retrieve($key);
+        if ( !is_array($ret_val) ) {
+            $ret_val = array( $ret_val );
+        }
+        foreach ( $ret_val as $key => &$path ) {
+            if (false === ($path = realpath($path))) {
+                unset($ret_val[$key]);
+            } else {
+                $path = str_replace('\\', '/', $path);
+            }
+        }
+        if ( 1 == count($ret_val) ) {
+            $ret_val_keys = array_keys($ret_val);
+            $ret_val = $ret_val[$ret_val_keys[0]];
+        }
+        return $ret_val;
+    }
+
     // GET
     public function help($request) {
         return array();
@@ -40,9 +59,7 @@ class Home extends \app\core\Controller {
     // GET/POST
     public function index($request) {
         if ( $request->is('get') ) {
-            $test_directory = str_replace(
-                '\\', '/', realpath(\app\lib\Library::retrieve('test_directory'))
-            );
+            $test_directory = $this->_get_paths_from_library_entry('test_directory');
             $suites = array();
             $stats = array();
             $store_statistics = \app\lib\Library::retrieve('store_statistics');

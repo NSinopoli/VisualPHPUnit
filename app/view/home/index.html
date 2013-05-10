@@ -11,6 +11,9 @@
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      .icon-folder-open {
+          width: 16px;
+      }
     </style>
     <link href="./css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -51,6 +54,21 @@
           <form id='test-container' action='./' method='post' class='well'>
             <ul class="nav nav-list">
               <li class='nav-header'>Files</li>
+              <?php if ( is_array($test_directory) && 1 < count($test_directory) ) { ?>
+              <li>
+                <label for='test_dir' class='options-description'>
+                  <i class='icon-folder-open'></i>
+                  Select Folder
+                </label>
+                <select id='test_dir' name='test_dir' class='test-options'>
+                  <?php $index = 1;
+                    foreach ( $test_directory as $test_dir ) { ?>
+                  <option value='<?php echo $test_dir; ?>'><?php echo $index . '. ' . $test_dir; ?></option>
+                  <?php $index++;
+                    } ?>
+                </select>
+              </li>
+              <?php } ?>
 
               <li>
                 <div class='file-selector'></div>
@@ -301,6 +319,20 @@
     </script>
 
     <script>
+      function getFileSelectorContents(parentDir) {
+          $('#test-files').attr('value', '');
+          $('.file-selector').empty().fileSelector({
+            callback: function() {
+              var tests = '';
+              $('.file.active, .directory.active').each(function() {
+                tests += $(this).children('a').attr('data-path') + '|';
+              });
+              $('#test-files').val(tests.slice(0, -1));
+            },
+            root: parentDir,
+            serverEndpoint: './file-list'
+          });
+      }
       $(document).ready(function() {
 
         var runTests = function(event) {
@@ -395,18 +427,17 @@
               $suites.fadeOut();
           }
         });
-
-        $('.file-selector').fileSelector({
-          callback: function() {
-            var tests = '';
-            $('.file.active, .directory.active').each(function() {
-              tests += $(this).children('a').attr('data-path') + '|';
-            });
-            $('#test-files').val(tests.slice(0, -1));
-          },
-          root: '<?=$test_directory;?>',
-          serverEndpoint: './file-list'
+		<?php if ( is_array($test_directory) && 1 < count($test_directory) ) { ?>
+        $('#test_dir').bind('change', function() {
+            getFileSelectorContents(this.value);
         });
+        <?php }
+            $default_dir = '';
+            if ( !empty($test_directory) ) {
+                $default_dir = ( is_array($test_directory) ) ? $test_directory[0] : $test_directory ;
+            }
+        ?>
+        getFileSelectorContents('<?= $default_dir ;?>');
       });
     </script>
 
