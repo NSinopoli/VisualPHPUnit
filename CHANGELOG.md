@@ -1,5 +1,10 @@
 # Changelog
 
+## Development
+
+* Allow `test_directory` and `xml_configuration_file` to be arrays of strings aswell so can run multiple test suites from one deployment.
+* Allow certain arguments to be passed to the command line version, temporarily overwriting the ones in bootstrap `$config`.
+
 ## v2.1.1
 
 * Don't allow duplicate files if the parent folder is selected (GH-90)

@@ -122,7 +122,15 @@
                 </label>
                 <select id='use_xml' name='use_xml' class='test-options'>
                   <option value='0'>No</option>
-                  <option value='1' <?php if ( $use_xml ) echo "selected='selected'"; ?>>Yes</option>
+                  <?php if ( is_array($use_xml) && !empty($use_xml) ) {
+                            $index = 1;
+                            foreach ( $use_xml as $xml_path ) { ?>
+                                <option value='<?php echo $xml_path; ?>'><?php echo $index . '. ' . $xml_path; ?></option>
+                  <?php         $index++;
+                            }
+                        } else { ?>
+                    <option value='1' <?php if ( $use_xml ) echo "selected='selected'"; ?>>Yes</option>
+                  <?php } ?>
                 </select>
                 <p class='help-block'>
                   Note that setting this to "Yes" will cause VPU to ignore the tests selected above and use the tests specified in the XML file instead.

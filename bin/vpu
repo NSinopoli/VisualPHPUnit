@@ -1,18 +1,75 @@
 #!/usr/bin/env php
 <?php
     require dirname(__DIR__) . '/app/config/bootstrap.php';
+    echo "\n";
+
+    $boolean_value_args = array(
+        'store_statistics',
+        'sandbox_errors'
+    );
+
+    $string_value_args = array(
+        'snapshot_directory',
+        'xml_configuration_file'
+    );
+
+    $arguments = array();
+    if ( $argc > 1 ) {
+        foreach ( $argv as $index => $argument ) {
+            if ( 0 !== strpos($argument, '--') ) {
+                continue;
+            }
+            $argument = substr($argument, 2);
+            if ( in_array($argument, $string_value_args) ) {
+                $arguments[$argument] = $command_line_args[$index+1];
+            } elseif ( in_array($argument, $boolean_value_args) ) {
+                $arguments[$argument] = true;
+            } else {
+                die(
+                    "Unknown command line argument --"
+                    . $argument . "\n"
+                );
+            }
+        }
+    }
 
     $xml_config = \app\lib\Library::retrieve('xml_configuration_file');
-    if ( !$xml_config || !$xml_config = realpath($xml_config) ) {
-        die(
-            "\nA valid xml_configuration_file must be specified in "
-            . "app/config/bootstrap.php for VPU to work."
-        );
+    if ( array_key_exists('xml_configuration_file', $arguments) ) {
+        if ( is_array($xml_config)
+                && isset($xml_config[$arguments['xml_configuration_file']]) ) {
+            $xml_config = realpath(
+                $xml_config[$arguments['xml_configuration_file']]
+            );
+        } else {
+            $xml_config = realpath($arguments['xml_configuration_file']);
+        }
+        if ( !is_string($xml_config) ) {
+            die(
+                "--xml_configuration_file must be a valid path or "
+                . "an index of the bootstrap \$config array.\n"
+            );
+        }
+    } else {
+        if ( $xml_config ) {
+            if ( is_array($xml_config) ) {
+                $xml_config_keys = array_keys($xml_config);
+                $xml_config = $xml_config[$xml_config_keys[0]];
+            }
+            $xml_config = realpath($xml_config);
+        }
+        if ( !$xml_config ) {
+            die(
+                "A valid xml_configuration_file must be specified in "
+                . "app/config/bootstrap.php for VPU to work.\n"
+            );
+        }
     }
 
     $vpu = new \app\lib\VPU();
 
-    $sandbox_errors = \app\lib\Library::retrieve('sandbox_errors');
+    $sandbox_errors = array_key_exists('sandbox_errors', $arguments)
+        ? $arguments['sandbox_errors']
+        : \app\lib\Library::retrieve('sandbox_errors');
     if ( $sandbox_errors ) {
         error_reporting(\app\lib\Library::retrieve('error_reporting'));
         set_error_handler(array($vpu, 'handle_errors'));
@@ -30,16 +87,21 @@
     $errors = $vpu->get_errors();
     $to_view = compact('suites', 'stats', 'errors');
 
-    $filename = realpath(
-        \app\lib\Library::retrieve('snapshot_directory')
-    ) . '/' . date('Y-m-d_H-i') . '.html';
+    if ( array_key_exists('snapshot_directory', $arguments) ) {
+        $snapshot_directory = $arguments['snapshot_directory'];
+        $snapshot_directory_message = '--snapshot_directory';
+    } else {
+        $snapshot_directory = \app\lib\Library::retrieve('snapshot_directory');
+        $snapshot_directory_message = 'snapshot_directory in app/config/bootstrap.php';
+    }
+    $filename = realpath($snapshot_directory) . '/' . date('Y-m-d_H-i') . '.html';
 
     $handle = @fopen($filename, 'a');
     if ( !$handle ) {
         die(
-            "\nThere was an error creating the snapshot.  Please ensure that "
-            . "the snapshot_directory in app/config/bootstrap.php exists and "
-            . "has the proper permissions."
+            "There was an error creating the snapshot.  Please ensure that "
+            . "the {$snapshot_directory_message} specified exists and has the "
+            . "proper permissions.\n"
         );
     }
 
@@ -49,9 +111,11 @@
     fwrite($handle, $contents);
     fclose($handle);
 
-    echo "\nSnapshot successfully created at {$filename}.";
+    echo "Snapshot successfully created at {$filename}.";
 
-    $store_statistics = \app\lib\Library::retrieve('store_statistics');
+    $store_statistics = array_key_exists('store_statistics', $arguments)
+        ? $arguments['store_statistics']
+        : \app\lib\Library::retrieve('store_statistics');
     if ( !$store_statistics ) {
         exit;
     }
@@ -60,8 +124,8 @@
     $db = new $db_options['plugin']();
     if ( !$db->connect($db_options) ) {
         die(
-            "\nThere was an error connecting to the database:\n"
-            . implode(' ', $db->get_errors())
+            "There was an error connecting to the database:\n"
+            . implode(' ', $db->get_errors())."\n"
         );
     }
 
@@ -77,12 +141,11 @@
         $table = ucfirst(rtrim($key, 's')) . 'Result';
         if ( !$db->insert($table, $data) ) {
             die(
-                "\nThere was an error inserting a record into the database:\n"
-                . implode(' ', $db->get_errors())
+                "There was an error inserting a record into the database:\n"
+                . implode(' ', $db->get_errors())."\n"
             );
         }
     }
 
-    echo "\nThe statistics generated during this test run were successfully "
-        . "stored.";
+    echo "The statistics generated during this test run were successfully stored.";
 ?>
