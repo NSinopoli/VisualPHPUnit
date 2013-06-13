@@ -5,14 +5,13 @@ namespace app\controller;
 class Home extends \app\core\Controller {
 
     protected function _create_snapshot($view_data) {
-        $filename = realpath(
-            \app\lib\Library::retrieve('snapshot_directory')
-        ) . '/' . date('Y-m-d_H-i') . '.html';
+        $directory = \app\lib\Library::retrieve('snapshot_directory');
+        $filename = realpath($directory). '/' . date('Y-m-d_H-i') . '.html';
 
         $contents = $this->render_html('partial/test_results', $view_data);
 
         $handle = @fopen($filename, 'a');
-        if ( !$handle ) {
+        if ( !file_exists($directory) || !$handle ) {
             return array(
                 'type'    => 'failed',
                 'title'   => 'Error Creating Snapshot',
