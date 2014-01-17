@@ -11,10 +11,37 @@
       }, options);
 
       return this.each(function() {
-
+	
         function buildTree($fileSelector, dir, isActive) {
           $.get(options.serverEndpoint, {dir: dir}, function(response) {
-            var classAttr = ( $.inArray(dir, options.roots) ) ? " nav" : '',
+	    if(typeof dir['path'] !== 'undefined')
+            {
+                suite = dir;
+                dir = suite['path'];
+
+                rootDirs = new Array();
+                for(s in options.roots)
+                {
+                    rootDirs.push(s['path']);
+                }
+
+                html  = "<ul class='nav-list nav'>";
+                html += "<li class='suite' id='"+suite['suite']+"'>";
+                html += "<a href='#' data-path='"+suite['path']+"'><i class='icon-folder-close'></i>"+suite['name']+"</a>";
+                html += "</li>";
+                html += "</ul>";
+
+                var $suite = $(html);
+
+                $fileSelector.append($suite);
+                innerFiles = $fileSelector.find('#'+suite['suite']);
+            }
+            else
+            {
+                innerFiles = $fileSelector;
+                rootDirs = options.roots;
+            }
+            var classAttr = ( $.inArray(dir, rootDirs) ) ? " nav" : '',
                 html = "<ul class='nav-list" + classAttr + "' " +
                   "style='display: none;'>";
 
@@ -36,15 +63,22 @@
 
             html += '</ul>';
             var $ul = $(html);
-            $fileSelector.append($ul);
+            innerFiles.append($ul);
 
-            if ( $.inArray(dir, options.roots) ) {
-              $fileSelector.find('ul:hidden').show();
+            if ( $.inArray(dir, rootDirs) ) {
+              innerFiles.find('ul:hidden').show();
             } else {
-              $fileSelector.find('ul:hidden').slideDown(options.expandSpeed);
+              innerFiles.find('ul:hidden').slideDown(options.expandSpeed);
             }
 
-            bindTree($ul);
+            if(typeof $suite !== 'undefined')
+            {
+                bindTree($suite);
+            }
+            else
+            {
+                bindTree($ul);
+            }
           });
         }
 
@@ -58,7 +92,7 @@
 
             event.preventDefault();
 
-            if ( $parent.hasClass('directory') ) {
+            if ( $parent.hasClass('directory') || $parent.hasClass('suite') ) {
               if ( event.metaKey || event.ctrlKey ) {
                 $parent.toggleClass('active');
                 $parent.find('li').toggleClass('active');
@@ -99,10 +133,10 @@
           });
         }
 
-        var length = options.roots.length;
+        //var length = options.roots.length;
         var $self = $(this);
-        for ( var i = 0; i < length; i++ ) {
-          buildTree($self, encodeURIComponent(options.roots[i]));
+        for(suite in options.roots){
+            buildTree($self, options.roots[suite]);
         }
       });
     }

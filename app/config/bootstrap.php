@@ -11,6 +11,13 @@ $config = array(
     // The directories where the tests reside
     'test_directories' => array(
         "{$root}/app/test"
+        //OR
+        array(
+	  'suite' => 'computer_readable_name',
+	  'name' => 'Human readable name',
+	  'path' => "{$root}/app/test"
+        )
+        //But not both at once!
     ),
 
 

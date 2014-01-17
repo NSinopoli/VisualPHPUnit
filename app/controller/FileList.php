@@ -18,7 +18,16 @@ class FileList extends \app\core\Controller {
         $test_directories = \app\lib\Library::retrieve('test_directories');
         $valid_dir = false;
         foreach ( $test_directories as $test_directory ) {
-            if ( strpos($dir, realpath($test_directory)) === 0 ) {
+            if(isset($test_directory['path']))
+            {
+                $test_path = $test_directory['path'];
+            }
+            else
+            {
+                $test_path = $test_directory;
+            }
+
+            if ( strpos($dir, realpath($test_path)) === 0 ) {
                 $valid_dir = true;
                 break;
             }
