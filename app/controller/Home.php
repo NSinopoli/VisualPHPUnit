@@ -40,6 +40,11 @@ class Home extends \app\core\Controller {
     public function index($request) {
         if ( $request->is('get') ) {
             $normalize_path = function($path) {
+                if(is_array($path) && isset($path['path']))
+                {
+                    $path['path'] = str_replace('\\', '/', realpath($path['path']));
+                    return $path;
+                }
                 return str_replace('\\', '/', realpath($path));
             };
             $test_directories = json_encode(array_map(
