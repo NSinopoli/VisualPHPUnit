@@ -2,6 +2,8 @@
 
 namespace app\lib;
 
+include_once('PHPUnit_Util_Log_JSON_With_String_Comparison.php');
+
 class VPU {
 
    /**
@@ -428,7 +430,7 @@ class VPU {
         }
 
         $result = new \PHPUnit_Framework_TestResult();
-        $result->addListener(new \PHPUnit_Util_Log_JSON());
+        $result->addListener(new PHPUnit_Util_Log_JSON_With_String_Comparison());
 
         // We need to temporarily turn off html_errors to ensure correct
         // parsing of test debug output
