@@ -49,7 +49,6 @@ class PUTest extends PHPUnit_Framework_TestCase
      */
     public function anotherThing()
     {
-        somestr;
         $key = 'test';
         $value = 'value';
         $this->assertEquals($key, $value, 'test_this_too() failed!');

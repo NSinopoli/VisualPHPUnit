@@ -177,26 +177,18 @@ If you'd like to load any bootstraps, you will have to do the following:
 
 VPU can be run at the command line, making it possible to automate the generation of test results via cron.
 
+You may append --help for options
+
 ### Usage
 
 ```bash
 # from the project root
-bin/vpu --xml_configuration_file app/config/phpunit.xml --snapshot_directory app/history -e -s
+bin/vpu
 ```
-
-### Options
-
--f, --xml_configuration_file: The path to the [XML configuration file](#xml-configuration). Required. Please be sure that the [configuration file](#xml-configuration) contains the required JSON listener.
-
--d, --snapshot_directory: The path where the [snapshot](#snapshots) should be stored. Optional. Defaults to the value of `snapshot_directory` within the `$config` array of `app/config/bootstrap`.
-
--e, --sandbox_errors: Whether or not to [sandbox](#sandboxing) PHP errors. Optional. Defaults to the value of `sandbox_errors` within the `$config` array of `app/config/bootstrap`.
-
--s, --store_statistics: Whether or not to store the statistics in a database. Optional. Defaults to the value of `store_statistics` within the `$config` array of `app/config/bootstrap`. Make sure that the [database](#graph-generation) is configured correctly.
 
 ## Version Information
 
-Current stable release is v2.2, last updated on May 11, 2013.
+Current stable release is v2.3, last updated on Jul 21, 2015.
 
 ## Credits
 

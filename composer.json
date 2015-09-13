@@ -44,7 +44,8 @@
 	"license" : "BSD-3-Clause-Clear",
 	"require" : {
 		"php" : ">=5.3.3",
-		"phpunit/phpunit" : "4.6.9@stable"
+		"phpunit/phpunit" : "4.1.6",
+		"symfony/console" : ">=2.7.3@stable"
 	},
 	"minimum-stability" : "stable",
 	"support" : {
@@ -54,5 +55,12 @@
 	"config" : {
 		"bin-dir" : "bin/",
 		"vendor-dir" : "vendor/"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Visualphpunit\\" : "src",
+			"app\\" : "app",
+			"nx\\" : "nx"
+		}
 	}
 }

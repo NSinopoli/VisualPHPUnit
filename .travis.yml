@@ -1,4 +1,3 @@
----
 language: php
 os:
 - linux
@@ -7,7 +6,6 @@ php:
 - 5.4
 - 5.5
 - 5.6
-
 before_script:
 - composer install
 - wget -nc -O ./phpDocumentor.phar http://www.phpdoc.org/phpDocumentor.phar
@@ -17,11 +15,15 @@ before_script:
 - wget -nc -O ./phpcbf.phar --no-check-certificate https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
 - chmod 755 ./phpcbf.phar
 - phpenv rehash
-
 matrix:
   allow_failures:
   - php: 5.6
-  
 script:
 - php ./phpcs.phar
 - php ./phpDocumentor.phar -f phpdoc.dist.xml
+
+after_success: ./gh-pages.sh
+
+env:
+  global:
+    secure: cbO39UUuNrYQrJP+YhtsJcPFAHvLbVek8hCHV+WedWaTNFll1TIfS7bhPQ3n9OA/hEH/c4hZ2fqucQcbWA9Mo6aku8AUokNw7NazapNl5JzraqhFzHp/hj5KQZHIDy9ZauhFXrbxS63IQd94oD65WGJBQSj6z0IOYmdp6hxvw0tmWwNxAi77GIw+Czgvye6FkdHDLqjLnPQMCRJi++IJuX8n1miw2fXmczCGM7CQUvnw7u0TCkb6Og6gJgzUolSQH+4K1s5aoCCx2I5UDoxnJNvsxIH/Lq8igTL5Zb8j4edxzPEC1dN5/8Gw+qwc1OrhICji2dWLIEtK/5RZPPiEXKL6ss297O3nOcBwVJFpI6mkpm76Ve3r9HmntA4pl7HwtHaMeBOQ/lM82MhDfYPqNKfjJn0YBgU9cA0yDtxpDZFjYPZ1INZRcFb8T1sNdPhzl68F9+2kwyi9b2Oe1OTw24lX61uwTm67SIDA2qg1mYyYHxzUenpnDP38ib+5ehUobdJT96NyJs/Yww40RGLIipdlg5hRPNMJEFAz5TQFmyVkQeoXJVl1GhYbGG9EXci+sFsTzgjiRwr/XyXYoQ0IVyK3bnniPI5FyLTtwgOA30aot1YnxSwqgREzcEgNPZZ5Np/YcXo8F0K+/ca78PEhzjOFBfeJWedDKJNlUltPbHQ=
