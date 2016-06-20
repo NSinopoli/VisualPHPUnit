@@ -38,6 +38,10 @@ class Test extends Action
     public function index(Request $request, Application $app)
     {
         $data = array();
+        $app['config'] += [
+            'test-directories' => [],
+            'test-configurations' => [],
+        ];
         foreach ($app['config']['test-directories'] as $suite) {
             $data[] = array(
                 'text' => $suite['name'],
@@ -45,6 +49,9 @@ class Test extends Action
                 'nodes' => $this->parse($suite['path'], $suite['ignoreHidden']),
                 'selectable' => false
             );
+        }
+        foreach ($app['config']['test-configurations'] as $test_configuration) {
+            $data = array_merge($data, $this->parseTestConfiguration($test_configuration));
         }
         return $this->ok($data);
     }
@@ -194,5 +201,51 @@ class Test extends Action
                 0
             ];
         }
+    }
+
+    private function parseTestConfiguration($test_configuration)
+    {
+        $configuration = \PHPUnit_Util_Configuration::getInstance($test_configuration);
+        $phpunitConfiguration = $configuration->getPHPUnitConfiguration();
+
+        if (isset($phpunitConfiguration['bootstrap'])) {
+            \PHPUnit_Util_Fileloader::checkAndLoad($phpunitConfiguration['bootstrap']);
+        }
+
+        $test_suite = $configuration->getTestSuiteConfiguration();
+        $list = $this->parseTestSuite($test_suite);
+
+        return $list;
+    }
+
+    private function parseTestSuite(\PHPUnit_Framework_TestSuite $test_suite)
+    {
+        $is_test = function () {
+            return $this->testCase;
+        };
+        \Closure::bind($is_test, $test_suite);
+        $list = [];
+        if (class_exists($test_suite->getName())) {
+            $reflection_class = new \ReflectionClass($test_suite->getName());
+            $list[] = [
+              'text' => $test_suite->getName(),
+              'type' => 'file',
+              'path' => $reflection_class->getFileName(),
+              'selectable' => true
+            ];
+        } else {
+            $nodes = [];
+            foreach ($test_suite->tests() as $test) {
+                $nodes = array_merge($nodes, $this->parseTestSuite($test));
+            }
+            $list[] = array(
+                'text' => $test_suite->getName(),
+                'type' => 'file',
+                'path' => '',
+                'nodes' => $nodes,
+                'selectable' => false
+            );
+        }
+        return $list;
     }
 }
